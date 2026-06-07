@@ -1,7 +1,8 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . '/../../config/database.php';
 if (isset($_SESSION['usuario_id'])) {
-    header('Location: ../../controllers/ClienteController.php?action=index');
+    header('Location: ' . BASE_URL . '/controllers/ClienteController.php?action=index');
     exit;
 }
 ?>
@@ -33,48 +34,30 @@ if (isset($_SESSION['usuario_id'])) {
 
             <div class="form-group">
                 <label class="form-label">Nombre completo</label>
-                <input
-                    type="text"
-                    name="nombre"
-                    class="form-control"
+                <input type="text" name="nombre" class="form-control"
                     placeholder="Tu nombre"
                     value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
-                    required
-                >
+                    required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Correo electrónico</label>
-                <input
-                    type="email"
-                    name="email"
-                    class="form-control"
+                <input type="email" name="email" class="form-control"
                     placeholder="tucorreo@email.com"
                     value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                    required
-                >
+                    required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Contraseña</label>
-                <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Mínimo 6 caracteres"
-                    required
-                >
+                <input type="password" name="password" class="form-control"
+                    placeholder="Mínimo 6 caracteres" required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Confirmar contraseña</label>
-                <input
-                    type="password"
-                    name="confirm"
-                    class="form-control"
-                    placeholder="Repite tu contraseña"
-                    required
-                >
+                <input type="password" name="confirm" class="form-control"
+                    placeholder="Repite tu contraseña" required>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding: 0.75rem;">

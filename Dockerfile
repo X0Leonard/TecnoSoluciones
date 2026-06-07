@@ -10,6 +10,10 @@ RUN echo 'server { \n\
     listen 80; \n\
     root /var/www/html; \n\
     index index.php index.html; \n\
+    location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg)$ { \n\
+        expires max; \n\
+        log_not_found off; \n\
+    } \n\
     location / { try_files $uri $uri/ =404; } \n\
     location ~ \.php$ { \n\
         fastcgi_pass 127.0.0.1:9000; \n\

@@ -1,8 +1,9 @@
 FROM php:8.2-apache
 
-RUN docker-php-ext-install pdo pdo_mysql
-
-RUN a2dismod mpm_event && a2enmod mpm_prefork
+RUN docker-php-ext-install pdo pdo_mysql \
+    && a2dismod mpm_event || true \
+    && a2enmod mpm_prefork || true \
+    && a2enmod rewrite
 
 COPY . /var/www/html/
 

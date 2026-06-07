@@ -6,25 +6,21 @@ RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 
 COPY . /var/www/html/
 
-COPY <<EOF /etc/nginx/sites-available/default
-server {
-    listen 80;
-    root /var/www/html;
-    index index.php index.html;
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-    location ~ \.php$ {
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-    }
-}
-EOF
+RUN echo 'server { \n\
+    listen 80; \n\
+    root /var/www/html; \n\
+    index index.php index.html; \n\
+    location / { try_files $uri $uri/ =404; } \n\
+    location ~ \.php$ { \n\
+        fastcgi_pass 127.0.0.1:9000; \n\
+        fastcgi_index index.php; \n\
+        include fastcgi_params; \n\
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \n\
+    } \n\
+}' > /etc/nginx/sites-available/default
 
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
 
-CMD service php8.2-fpm start && nginx -g "daemon off;"
+CMD php-fpm -D && nginx -g "daemon off;"

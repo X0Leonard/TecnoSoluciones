@@ -1,6 +1,6 @@
 <?php
 session_start();
-define('BASE_URL', '/TecnoSoluciones');
+define('BASE_URL', '');
 require_once __DIR__ . '/../models/Usuario.php';
 
 class AuthController {

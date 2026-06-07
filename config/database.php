@@ -1,14 +1,15 @@
 <?php
 if (!defined('BASE_URL')) {
-    define('BASE_URL', '/TecnoSoluciones');
+    define('BASE_URL', '');
 }
 
 class Database {
     private static $instance = null;
-    private static $host     = 'localhost';
-    private static $dbname   = 'tecnosoluciones';
+    private static $host     = 'mysql.railway.internal';
+    private static $dbname   = 'railway';
     private static $user     = 'root';
-    private static $password = '1234';
+    private static $password = 'TpqDbwCpEhpValilioSRsIifQvVyPkdf';
+    private static $port     = '3306';
 
     private function __construct() {}
 
@@ -16,7 +17,7 @@ class Database {
         if (self::$instance === null) {
             try {
                 self::$instance = new PDO(
-                    'mysql:host=' . self::$host . ';dbname=' . self::$dbname . ';charset=utf8',
+                    'mysql:host=' . self::$host . ';port=' . self::$port . ';dbname=' . self::$dbname . ';charset=utf8',
                     self::$user,
                     self::$password
                 );

@@ -30,7 +30,7 @@
                             type="text"
                             name="nombre"
                             class="form-control"
-                            placeholder="Ej: Juan Pérez"
+                            placeholder="Ej: Roberto Gómez"
                             value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
                             required
                         >
@@ -41,7 +41,7 @@
                             type="email"
                             name="email"
                             class="form-control"
-                            placeholder="Ej: juan@empresa.com"
+                            placeholder="Ej: roberto@empresa.com"
                             value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                             required
                         >

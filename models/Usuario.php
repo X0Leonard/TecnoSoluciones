@@ -3,14 +3,15 @@ require_once __DIR__ . '/Model.php';
 
 class Usuario extends Model {
 
-    public function registrar($nombre, $email, $password) {
+    public function registrar($nombre, $email, $password, $rol = 'trabajador') {
         $hash = password_hash($password, PASSWORD_BCRYPT);
-        $sql = "insert into usuarios (nombre, email, password) values (:nombre, :email, :password)";
+        $sql  = "insert into usuarios (nombre, email, password, rol) values (:nombre, :email, :password, :rol)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':nombre'   => $nombre,
             ':email'    => $email,
-            ':password' => $hash
+            ':password' => $hash,
+            ':rol'      => $rol
         ]);
     }
 
@@ -30,5 +31,22 @@ class Usuario extends Model {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':email' => $email]);
         return $stmt->fetch() ? true : false;
+    }
+
+    public function obtenerTodos() {
+        $stmt = $this->db->prepare("select id, nombre, email, rol, created_at from usuarios order by created_at desc");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function eliminar($id) {
+        $stmt = $this->db->prepare("delete from usuarios where id = :id");
+        return $stmt->execute([':id' => $id]);
+    }
+
+    public function obtenerPorId($id) {
+        $stmt = $this->db->prepare("select id, nombre, email, rol from usuarios where id = :id limit 1");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch();
     }
 }

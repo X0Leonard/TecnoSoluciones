@@ -4,32 +4,42 @@
 
     <div class="page-header">
         <div>
-            <h1 class="page-title">👥 Clientes</h1>
-            <p class="page-subtitle">Gestiona los clientes registrados en el sistema</p>
+            <h1 class="page-title">👥 clientes</h1>
+            <p class="page-subtitle">gestiona los clientes registrados en el sistema</p>
         </div>
-        <a href="<?= BASE_URL ?>/controllers/ClienteController.php?action=create" class="btn btn-primary">
-            + Nuevo Cliente
-        </a>
+        <?php if ($es_admin): ?>
+            <a href="<?= BASE_URL ?>/controllers/ClienteController.php?action=create" class="btn btn-primary">
+                + nuevo cliente
+            </a>
+        <?php endif; ?>
     </div>
 
     <?php if (isset($_GET['success'])): ?>
         <div class="alert alert-success">
-            <?php
-            match($_GET['success']) {
-                '1' => print('✅ Cliente creado correctamente.'),
-                '2' => print('✅ Cliente actualizado correctamente.'),
-                '3' => print('✅ Cliente eliminado correctamente.'),
+            <?php match($_GET['success']) {
+                '1' => print('✅ cliente creado correctamente.'),
+                '2' => print('✅ cliente actualizado correctamente.'),
+                '3' => print('✅ cliente eliminado correctamente.'),
                 default => ''
-            };
-            ?>
+            }; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error']) && $_GET['error'] === 'permiso'): ?>
+        <div class="alert alert-danger">⚠️ no tienes permisos para realizar esa acción.</div>
+    <?php endif; ?>
+
+    <?php if (!$es_admin): ?>
+        <div class="alert" style="background:#1e3a5f22; border-left:3px solid #3b82f6; color:#93c5fd; margin-bottom:1rem;">
+            ℹ️ como trabajador puedes consultar los clientes, pero solo el administrador puede crear, editar o eliminarlos.
         </div>
     <?php endif; ?>
 
     <div class="card">
         <div class="card-header">
-            <span class="card-title">Lista de Clientes</span>
+            <span class="card-title">lista de clientes</span>
             <span style="font-size:0.85rem; color:#64748b;">
-                Total: <?= count($clientes) ?> cliente(s)
+                total: <?= count($clientes) ?> cliente(s)
             </span>
         </div>
         <div class="card-body" style="padding:0;">
@@ -38,19 +48,19 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Teléfono</th>
-                            <th>Empresa</th>
-                            <th>Registrado</th>
-                            <th>Acciones</th>
+                            <th>nombre</th>
+                            <th>email</th>
+                            <th>teléfono</th>
+                            <th>empresa</th>
+                            <th>registrado</th>
+                            <?php if ($es_admin): ?><th>acciones</th><?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($clientes)): ?>
                             <tr>
-                                <td colspan="7" style="text-align:center; padding:2rem; color:#64748b;">
-                                    No hay clientes registrados aún.
+                                <td colspan="<?= $es_admin ? 7 : 6 ?>" style="text-align:center; padding:2rem; color:#64748b;">
+                                    no hay clientes registrados aún.
                                 </td>
                             </tr>
                         <?php else: ?>
@@ -64,19 +74,21 @@
                                     <td style="color:#94a3b8; font-size:0.85rem;">
                                         <?= date('d/m/Y', strtotime($c['created_at'])) ?>
                                     </td>
+                                    <?php if ($es_admin): ?>
                                     <td>
                                         <div class="actions">
                                             <a href="<?= BASE_URL ?>/controllers/ClienteController.php?action=edit&id=<?= $c['id'] ?>"
                                                class="btn btn-secondary btn-sm">
-                                                ✏️ Editar
+                                                ✏️ editar
                                             </a>
                                             <a href="<?= BASE_URL ?>/controllers/ClienteController.php?action=delete&id=<?= $c['id'] ?>"
                                                class="btn btn-danger btn-sm"
-                                               onclick="return confirm('¿Eliminar este cliente y sus proyectos?')">
-                                                🗑️ Eliminar
+                                               onclick="return confirm('¿eliminar este cliente y sus proyectos?')">
+                                                🗑️ eliminar
                                             </a>
                                         </div>
                                     </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

@@ -3,13 +3,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Si no está logueado, redirige al login
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../../views/auth/login.php');
     exit;
 }
 
 $usuario_nombre = $_SESSION['usuario_nombre'] ?? 'Usuario';
+$usuario_rol    = $_SESSION['usuario_rol']    ?? 'trabajador';
+$es_admin       = $usuario_rol === 'admin';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -39,10 +40,24 @@ $usuario_nombre = $_SESSION['usuario_nombre'] ?? 'Usuario';
             </a>
         </li>
         <li>
-            <a href="<?= $base_path ?? '../../' ?>reports/ReporteController.php?action=clientes"
+            <a href="<?= $base_path ?? '../../' ?>reports/ReporteController.php?action=completo"
                class="nav-link">
                 📄 Reporte PDF
             </a>
+        </li>
+        <?php if ($es_admin): ?>
+        <li>
+            <a href="<?= $base_path ?? '../../' ?>controllers/AdminController.php?action=index"
+               class="nav-link <?= ($active_page ?? '') === 'admin' ? 'active' : '' ?>"
+               style="color: #f59e0b;">
+                ⚙️ Usuarios
+            </a>
+        </li>
+        <?php endif; ?>
+        <li>
+            <span style="color:#94a3b8; font-size:0.82rem; padding: 0 0.5rem;">
+                <?= $es_admin ? '👑' : '👤' ?> <?= htmlspecialchars($usuario_nombre) ?>
+            </span>
         </li>
         <li>
             <a href="<?= $base_path ?? '../../' ?>controllers/AuthController.php?action=logout"

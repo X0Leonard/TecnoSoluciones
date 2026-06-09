@@ -10,6 +10,17 @@ if (!isset($_SESSION['usuario_id'])) {
 require_once __DIR__ . '/../models/Proyecto.php';
 require_once __DIR__ . '/../models/Cliente.php';
 
+function esAdmin() {
+    return ($_SESSION['usuario_rol'] ?? '') === 'admin';
+}
+
+function soloAdmin() {
+    if (!esAdmin()) {
+        header('Location: ' . BASE_URL . '/controllers/ProyectoController.php?action=index&error=permiso');
+        exit;
+    }
+}
+
 class ProyectoController {
 
     private $proyecto;
@@ -62,7 +73,29 @@ class ProyectoController {
         exit;
     }
 
+    public function cambiarEstado() {
+        $id       = $_GET['id'] ?? 0;
+        $proyecto = $this->proyecto->obtenerPorId($id);
+
+        if (!$proyecto) {
+            header('Location: ' . BASE_URL . '/controllers/ProyectoController.php?action=index');
+            exit;
+        }
+
+        $siguiente = match($proyecto['estado']) {
+            'pendiente'   => 'en_progreso',
+            'en_progreso' => 'completado',
+            'completado'  => 'pendiente',
+            default       => 'pendiente'
+        };
+
+        $this->proyecto->cambiarEstado($id, $siguiente);
+        header('Location: ' . BASE_URL . '/controllers/ProyectoController.php?action=index&success=4');
+        exit;
+    }
+
     public function edit() {
+        soloAdmin();
         $id       = $_GET['id'] ?? 0;
         $proyecto = $this->proyecto->obtenerPorId($id);
 
@@ -80,6 +113,7 @@ class ProyectoController {
     }
 
     public function update() {
+        soloAdmin();
         $id           = $_POST['id'] ?? 0;
         $nombre       = trim($_POST['nombre'] ?? '');
         $descripcion  = trim($_POST['descripcion'] ?? '');
@@ -94,6 +128,7 @@ class ProyectoController {
     }
 
     public function delete() {
+        soloAdmin();
         $id = $_GET['id'] ?? 0;
         $this->proyecto->eliminar($id);
         header('Location: ' . BASE_URL . '/controllers/ProyectoController.php?action=index&success=3');
@@ -106,11 +141,12 @@ $controller = new ProyectoController();
 $action = $_GET['action'] ?? 'index';
 
 match($action) {
-    'index'  => $controller->index(),
-    'create' => $controller->create(),
-    'store'  => $controller->store(),
-    'edit'   => $controller->edit(),
-    'update' => $controller->update(),
-    'delete' => $controller->delete(),
-    default  => $controller->index()
+    'index'         => $controller->index(),
+    'create'        => $controller->create(),
+    'store'         => $controller->store(),
+    'edit'          => $controller->edit(),
+    'update'        => $controller->update(),
+    'delete'        => $controller->delete(),
+    'cambiarEstado' => $controller->cambiarEstado(),
+    default         => $controller->index()
 };

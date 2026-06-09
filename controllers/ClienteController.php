@@ -10,6 +10,17 @@ if (!isset($_SESSION['usuario_id'])) {
 require_once __DIR__ . '/../models/Cliente.php';
 require_once __DIR__ . '/../models/Proyecto.php';
 
+function esAdmin() {
+    return ($_SESSION['usuario_rol'] ?? '') === 'admin';
+}
+
+function soloAdmin() {
+    if (!esAdmin()) {
+        header('Location: ' . BASE_URL . '/controllers/ClienteController.php?action=index&error=permiso');
+        exit;
+    }
+}
+
 class ClienteController {
 
     private $cliente;
@@ -30,6 +41,7 @@ class ClienteController {
     }
 
     public function create() {
+        soloAdmin();
         $page_title  = 'Nuevo Cliente';
         $active_page = 'clientes';
         $css_path    = BASE_URL . '/public/css/style.css';
@@ -38,6 +50,7 @@ class ClienteController {
     }
 
     public function store() {
+        soloAdmin();
         $nombre   = trim($_POST['nombre'] ?? '');
         $email    = trim($_POST['email'] ?? '');
         $telefono = trim($_POST['telefono'] ?? '');
@@ -59,6 +72,7 @@ class ClienteController {
     }
 
     public function edit() {
+        soloAdmin();
         $id      = $_GET['id'] ?? 0;
         $cliente = $this->cliente->obtenerPorId($id);
 
@@ -75,6 +89,7 @@ class ClienteController {
     }
 
     public function update() {
+        soloAdmin();
         $id       = $_POST['id'] ?? 0;
         $nombre   = trim($_POST['nombre'] ?? '');
         $email    = trim($_POST['email'] ?? '');
@@ -87,6 +102,7 @@ class ClienteController {
     }
 
     public function delete() {
+        soloAdmin();
         $id = $_GET['id'] ?? 0;
         $this->cliente->eliminar($id);
         header('Location: ' . BASE_URL . '/controllers/ClienteController.php?action=index&success=3');

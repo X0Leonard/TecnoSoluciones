@@ -53,4 +53,14 @@ class Cliente extends Model {
         $stmt->execute();
         return $stmt->fetch()['total'];
     }
+
+    public function obtenerConProyectos() {
+        $clientes = $this->obtenerTodos();
+        $stmt = $this->db->prepare("select * from proyectos where cliente_id = :id order by created_at desc");
+        foreach ($clientes as &$c) {
+            $stmt->execute([':id' => $c['id']]);
+            $c['proyectos'] = $stmt->fetchAll();
+        }
+        return $clientes;
+    }
 }

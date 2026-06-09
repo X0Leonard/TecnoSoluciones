@@ -60,6 +60,11 @@ class Proyecto extends Model {
         return $stmt->execute([':id' => $id]);
     }
 
+    public function cambiarEstado($id, $estado) {
+        $stmt = $this->db->prepare("update proyectos set estado = :estado where id = :id");
+        return $stmt->execute([':estado' => $estado, ':id' => $id]);
+    }
+
     public function contar() {
         $stmt = $this->db->prepare("select count(*) as total from proyectos");
         $stmt->execute();

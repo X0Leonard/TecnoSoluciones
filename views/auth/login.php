@@ -65,14 +65,6 @@ if (isset($_SESSION['usuario_id'])) {
 
         </form>
 
-        <p style="text-align:center; margin-top:1.25rem; font-size:0.875rem; color:#64748b;">
-            ¿No tienes cuenta?
-            <a href="<?= BASE_URL ?>/controllers/AuthController.php?action=register"
-               style="color:#2563eb; font-weight:500;">
-               Regístrate aquí
-            </a>
-        </p>
-
     </div>
 </div>
 
